@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  error-handling-example
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Resources:
+  RandomError:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: random_error/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+  LogInput:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: log_input/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+  ErrorHandlingStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine.asl.json
+      DefinitionSubstitutions:
+        RandomErrorFunctionName: !Ref RandomError
+        LogInputFunctionName: !Ref LogInput
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref RandomError
+        - LambdaInvokePolicy:
+            FunctionName: !Ref LogInput
+
+Outputs:
+  RandomErrorArn:
+    Description: "Random Error Lambda Function ARN"
+    Value: !GetAtt RandomError.Arn
+  LogInputArn:
+    Description: "Log Input Lambda Function ARN"
+    Value: !GetAtt LogInput.Arn
+  ErrorHandlingStateMachineArn:
+    Description: "Error Handling State Machine ARN"
+    Value: !GetAtt ErrorHandlingStateMachine.Arn

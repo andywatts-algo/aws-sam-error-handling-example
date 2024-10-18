@@ -1,0 +1,32 @@
+{
+	"Comment": "State machine for studying error handling.",
+	"StartAt": "RandomError",
+	"States": {
+	  "RandomError": {
+		"Type": "Task",
+		"Resource": "arn:aws:states:::lambda:invoke",
+		"Parameters": {
+		  "FunctionName": "${RandomErrorFunctionName}"
+		},
+		"Retry": [
+		  {
+			"ErrorEquals": ["TaskFailedException"],
+			"IntervalSeconds": 1,
+			"MaxAttempts": 3,
+			"BackoffRate": 2.0
+		  }
+		],
+		"Next": "LogInput"
+	  },
+	  "LogInput": {
+		"Type": "Task",
+		"Resource": "arn:aws:states:::lambda:invoke",
+		"Parameters": {
+		  "FunctionName": "${LogInputFunctionName}"
+		},
+		"End": true
+	  }
+	}
+  }
+
+
