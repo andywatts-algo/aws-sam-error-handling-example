@@ -4,10 +4,7 @@
 	"States": {
 	  "RandomError": {
 		"Type": "Task",
-		"Resource": "arn:aws:states:::lambda:invoke",
-		"Parameters": {
-		  "FunctionName": "${RandomErrorFunctionName}"
-		},
+		"Resource": "${RandomErrorArn}",
 		"Retry": [
 		  {
 			"ErrorEquals": ["TaskFailedException"],
@@ -20,10 +17,7 @@
 	  },
 	  "LogInput": {
 		"Type": "Task",
-		"Resource": "arn:aws:states:::lambda:invoke",
-		"Parameters": {
-		  "FunctionName": "${LogInputFunctionName}"
-		},
+		"Resource": "${LogInputArn}",
 		"End": true
 	  }
 	}
