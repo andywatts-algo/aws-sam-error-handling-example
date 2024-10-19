@@ -30,8 +30,8 @@ Resources:
     Properties:
       DefinitionUri: statemachine.asl.json
       DefinitionSubstitutions:
-        RandomErrorFunctionName: !Ref RandomError
-        LogInputFunctionName: !Ref LogInput
+        RandomErrorArn: !GetAtt RandomError.Arn
+        LogInputArn: !GetAtt LogInput.Arn
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref RandomError
